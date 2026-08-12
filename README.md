@@ -1,17 +1,17 @@
-#AWS EKS Monitoring Project
+# AWS EKS Monitoring Project
 
-##Overview
+## Overview
 A hands-on AWS DevOps project demonstrating how to deploy, monitor, and troubleshoot a Kubernetes application running on Amazon EKS.
 The project integrates:
-	• Prometheus & Grafana for Kubernetes monitoring
-	• Metrics Server for resource metrics
-	• Fluent Bit for container log collection
-	• Amazon CloudWatch for centralized logging
-	• IAM / IRSA for secure AWS access
-	• Helm & eksctl for Kubernetes and EKS management
+	- Prometheus & Grafana for Kubernetes monitoring
+	- Metrics Server for resource metrics
+	- Fluent Bit for container log collection
+	- Amazon CloudWatch for centralized logging
+	- IAM / IRSA for secure AWS access
+	- Helm & eksctl for Kubernetes and EKS management
 The project focuses on monitoring, centralized logging, AWS IAM integration, and production-style troubleshooting.
 
-##Architecture
+## Architecture
 
                               AWS
                                │
@@ -51,22 +51,24 @@ The project focuses on monitoring, centralized logging, AWS IAM integration, and
                 Log Streams 
                 
 
-##Technologies
-Category                	   Technology
-Cloud                        AWS
-Kubernetes	                 Amazon EKS
-Cluster Management	         eksctl
-Package Management	         Helm
-Monitoring	                 Prometheus
-Visualization	               Grafana
-Resource Metrics	           Metrics Server
-Logging	                     Fluent Bit
-Log Storage             	   Amazon CloudWatch
-IAM	                         IAM / IRSA
-Infrastructure         	     CloudFormation
-CLI	                         AWS CLI
+## Technologies
 
-##Implementation
+| Category | Technology |
+|---|---|
+| Cloud | AWS |
+| Kubernetes | Amazon EKS |
+| Cluster Management | eksctl |
+| Package Management | Helm |
+| Monitoring | Prometheus |
+| Visualization | Grafana |
+| Resource Metrics | Metrics Server |
+| Logging | Fluent Bit |
+| Log Storage | Amazon CloudWatch |
+| IAM | IAM / IRSA |
+| Infrastructure | CloudFormation |
+| CLI | AWS CLI |
+
+## Implementation
 1. EKS Cluster
 Created an Amazon EKS cluster using eksctl with a managed node group.
 The cluster configuration is defined in eks-cluster.yaml.
@@ -205,39 +207,39 @@ NGINX / Kubernetes Containers
              ▼
        Log Streams
 
-##Validation
+## Validation
 The following components were successfully deployed and validated:
-	• ✅ Amazon EKS cluster
-	• ✅ Managed node group
-	• ✅ Kubernetes namespace
-	• ✅ NGINX application
-	• ✅ Kubernetes Service
-	• ✅ Prometheus
-	• ✅ Grafana
-	• ✅ Metrics Server
-	• ✅ Kubernetes resource metrics
-	• ✅ Fluent Bit
-	• ✅ IAM / IRSA integration
-	• ✅ CloudWatch log group
-	• ✅ CloudWatch log streams
-	• ✅ Kubernetes application logs
+	- ✅ Amazon EKS cluster
+	- ✅ Managed node group
+	- ✅ Kubernetes namespace
+	- ✅ NGINX application
+	- ✅ Kubernetes Service
+	- ✅ Prometheus
+	- ✅ Grafana
+	- ✅ Metrics Server
+	- ✅ Kubernetes resource metrics
+	- ✅ Fluent Bit
+	- ✅ IAM / IRSA integration
+	- ✅ CloudWatch log group
+	- ✅ CloudWatch log streams
+	- ✅ Kubernetes application logs
 
-##Key Learnings
-	• Amazon EKS cluster and managed node group management
-	• Kubernetes application deployment
-	• Helm-based application management
-	• Prometheus monitoring
-	• Grafana visualization
-	• Kubernetes Metrics Server
-	• Fluent Bit log collection
-	• Amazon CloudWatch centralized logging
-	• IAM Roles for Service Accounts (IRSA)
-	• AWS IAM and OIDC integration
-	• Kubernetes troubleshooting
-	• Resource and scheduling troubleshooting
-	• AWS resource lifecycle management
+## Key Learnings
+	- Amazon EKS cluster and managed node group management
+	- Kubernetes application deployment
+	- Helm-based application management
+	- Prometheus monitoring
+	- Grafana visualization
+	- Kubernetes Metrics Server
+	- Fluent Bit log collection
+	- Amazon CloudWatch centralized logging
+	- IAM Roles for Service Accounts (IRSA)
+	- AWS IAM and OIDC integration
+	- Kubernetes troubleshooting
+	- Resource and scheduling troubleshooting
+	- AWS resource lifecycle management
 
-##Screenshots
+## Screenshots
 Screenshots demonstrating the implementation and validation are included below.
 
 EKS Cluster
@@ -270,7 +272,7 @@ CloudWatch Logs
 
 <img width="1881" height="732" alt="image" src="https://github.com/user-attachments/assets/81052999-d34b-40c3-93f4-b59ff334f851" />
 
-#Project Status
+# Project Status
 Completed
 The project successfully demonstrated an end-to-end Kubernetes monitoring and logging workflow on Amazon EKS, including monitoring, metrics collection, centralized logging, IAM integration, validation and troubleshooting.
 
@@ -301,5 +303,3 @@ The project successfully demonstrated an end-to-end Kubernetes monitoring and lo
 
 
 
-
-<img width="1767" height="9776" alt="image" src="https://github.com/user-attachments/assets/1e1769d9-cb64-42fc-8ed4-220c46eb8d9c" />
