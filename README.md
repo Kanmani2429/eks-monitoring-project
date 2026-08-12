@@ -97,6 +97,7 @@ Updated the kubeconfig file:
 aws eks update-kubeconfig \
   --name eks-monitoring-project \
   --region us-east-1
+  
 2. Kubernetes Application
 
 Created a dedicated monitoring namespace and deployed an NGINX application.
@@ -112,6 +113,7 @@ Validated the deployment:
 kubectl get pods -n monitoring
 
 kubectl get svc -n monitoring
+
 3. Prometheus and Grafana
 
 Installed the kube-prometheus-stack using Helm.
@@ -139,6 +141,7 @@ Validated resource metrics:
 kubectl top node
 
 kubectl top pods -n monitoring
+
 5. CloudWatch Logging
 
 Created a dedicated CloudWatch log group for Kubernetes application logs.
@@ -152,6 +155,7 @@ Validated the log group:
 aws logs describe-log-groups \
   --log-group-name-prefix /eks/eks-monitoring-project \
   --region us-east-1
+  
 6. IAM & IRSA Integration
 
 Created an IAM policy allowing Fluent Bit to send logs to CloudWatch.
