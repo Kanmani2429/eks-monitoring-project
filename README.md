@@ -73,160 +73,210 @@ The project focuses on monitoring, centralized logging, AWS IAM integration, and
 
 ## Implementation
 1. EKS Cluster
+
 Created an Amazon EKS cluster using eksctl with a managed node group.
+
 The cluster configuration is defined in eks-cluster.yaml.
+
 eksctl create cluster -f eks-cluster.yaml
 
 Validated the cluster:
+
 eksctl get cluster --region us-east-1
+
 aws cloudformation list-stacks \
---region us-east-1 \
---stack-status-filter CREATE_IN_PROGRESS CREATE_COMPLETE
-eksctl get nodegroup --cluster eks-monitoring-project --region us-east-1
+  --region us-east-1 \
+  --stack-status-filter CREATE_IN_PROGRESS CREATE_COMPLETE
+
+eksctl get nodegroup \
+  --cluster eks-monitoring-project \
+  --region us-east-1
 
 Updated the kubeconfig file:
-aws eks update-kubeconfig \
---name eks-monitoring-project \
---region us-east-1
 
+aws eks update-kubeconfig \
+  --name eks-monitoring-project \
+  --region us-east-1
 2. Kubernetes Application
+
 Created a dedicated monitoring namespace and deployed an NGINX application.
+
 kubectl apply -f kubernetes/namespace.yaml
+
 kubectl apply -f kubernetes/deployment.yaml
+
 kubectl apply -f kubernetes/service.yaml
 
 Validated the deployment:
-kubectl get pods -n monitoring
-kubectl get svc -n monitoring
 
+kubectl get pods -n monitoring
+
+kubectl get svc -n monitoring
 3. Prometheus and Grafana
+
 Installed the kube-prometheus-stack using Helm.
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo add prometheus-community \
+  https://prometheus-community.github.io/helm-charts
+
 helm repo update
 helm install prometheus \
   prometheus-community/kube-prometheus-stack \
   -n monitoring \
   -f helm/kube-prometheus-stack/values.yaml
+
 Prometheus and Grafana were accessed through Kubernetes port forwarding.
 
 4. Kubernetes Metrics
-Installed Metrics Server and validated node and pod resource usage.
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-kubectl top node
-kubectl top pods -n monitoring
 
+Installed Metrics Server and validated node and pod resource usage.
+
+kubectl apply -f \
+  https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Validated resource metrics:
+
+kubectl top node
+
+kubectl top pods -n monitoring
 5. CloudWatch Logging
-Created a dedicated CloudWatch log group for Kubernetes application logs:
+
+Created a dedicated CloudWatch log group for Kubernetes application logs.
+
 aws logs create-log-group \
---log-group-name /eks/eks-monitoring-project/application \
---region us-east-1
+  --log-group-name /eks/eks-monitoring-project/application \
+  --region us-east-1
 
 Validated the log group:
+
 aws logs describe-log-groups \
---log-group-name-prefix /eks/eks-monitoring-project \
---region us-east-1
-
+  --log-group-name-prefix /eks/eks-monitoring-project \
+  --region us-east-1
 6. IAM & IRSA Integration
-Created an IAM policy allowing Fluent Bit to send logs to CloudWatch.
-Configured an IAM OIDC provider for the EKS cluster:
-eksctl utils associate-iam-oidc-provider \
---cluster eks-monitoring-project \
---region us-east-1 \
---approve
 
-Created a Kubernetes service account connected to an IAM role:
+Created an IAM policy allowing Fluent Bit to send logs to CloudWatch.
+
+Configured an IAM OIDC provider for the EKS cluster:
+
+eksctl utils associate-iam-oidc-provider \
+  --cluster eks-monitoring-project \
+  --region us-east-1 \
+  --approve
+
+Created a Kubernetes ServiceAccount connected to an IAM role:
+
 eksctl create iamserviceaccount \
---cluster eks-monitoring-project \
---region us-east-1 \
---namespace amazon-cloudwatch \
---name fluent-bit \
---attach-policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/FluentBitCloudWatchPolicy \
---approve \
---override-existing-serviceaccounts
+  --cluster eks-monitoring-project \
+  --region us-east-1 \
+  --namespace amazon-cloudwatch \
+  --name fluent-bit \
+  --attach-policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/FluentBitCloudWatchPolicy \
+  --approve \
+  --override-existing-serviceaccounts
 
 This implemented the following authentication flow:
+
 Kubernetes Workload
         │
         ▼
-Kubernetes Service Account
+Kubernetes ServiceAccount
         │
         ▼
-   IAM Role
+IAM Role
         │
         ▼
-  IAM Policy
+IAM Policy
         │
         ▼
 Amazon CloudWatch
+
 This avoids storing long-term AWS access keys inside Kubernetes workloads.
 
 7. Fluent Bit
+
 Installed Fluent Bit using Helm to collect Kubernetes container logs.
+
 Added the Fluent Bit Helm repository:
-helm repo add fluent https://fluent.github.io/helm-charts
+
+helm repo add fluent \
+  https://fluent.github.io/helm-charts
+
 helm repo update
 
 Configured Fluent Bit to use the existing fluent-bit Kubernetes ServiceAccount created and mapped to an IAM role through IRSA.
 
 helm/fluent-bit/values.yaml:
+
 serviceAccount:
   create: false
   name: fluent-bit
 
 Installed Fluent Bit:
+
 helm install fluent-bit fluent/fluent-bit \
   -n amazon-cloudwatch \
   -f helm/fluent-bit/values.yaml
 
 Fluent Bit was configured to:
-	• Read container logs from the Kubernetes nodes
-	• Enrich logs with Kubernetes metadata
-	• Use the fluent-bit ServiceAccount for authentication
-	• Authenticate with AWS using IAM Roles for Service Accounts (IRSA)
-	• Send Kubernetes container logs to Amazon CloudWatch
+
+Read container logs from the Kubernetes nodes
+Enrich logs with Kubernetes metadata
+Use the fluent-bit ServiceAccount for authentication
+Authenticate with AWS using IAM Roles for Service Accounts (IRSA)
+Send Kubernetes container logs to Amazon CloudWatch
+
 Validated the Fluent Bit deployment:
+
 kubectl get pods -n amazon-cloudwatch
+
 Checked Fluent Bit logs:
+
 kubectl logs -n amazon-cloudwatch <fluent-bit-pod-name>
+
 Fluent Bit successfully initialized the CloudWatch output plugin and began sending Kubernetes container logs to Amazon CloudWatch.
 
 8. CloudWatch Log Validation
+
 Validated CloudWatch log streams using AWS CLI:
+
 aws logs describe-log-streams \
---log-group-name /eks/eks-monitoring-project/application \
---region us-east-1
+  --log-group-name /eks/eks-monitoring-project/application \
+  --region us-east-1
+
 CloudWatch log streams were successfully created for Kubernetes containers, confirming the complete logging pipeline:
+
 NGINX / Kubernetes Containers
              │
              ▼
         Fluent Bit
              │
              ▼
-       IAM / IRSA
+        IAM / IRSA
              │
              ▼
     CloudWatch Log Group
              │
              ▼
-       Log Streams
+        Log Streams
 
 ## Validation
 The following components were successfully deployed and validated:
-	- ✅ Amazon EKS cluster
-	- ✅ Managed node group
-	- ✅ Kubernetes namespace
-	- ✅ NGINX application
-	- ✅ Kubernetes Service
-	- ✅ Prometheus
-	- ✅ Grafana
-	- ✅ Metrics Server
-	- ✅ Kubernetes resource metrics
-	- ✅ Fluent Bit
-	- ✅ IAM / IRSA integration
-	- ✅ CloudWatch log group
-	- ✅ CloudWatch log streams
-	- ✅ Kubernetes application logs
 
+- ✅ Amazon EKS cluster
+- ✅ Managed node group
+- ✅ Kubernetes namespace
+- ✅ NGINX application
+- ✅ Kubernetes Service
+- ✅ Prometheus
+- ✅ Grafana
+- ✅ Metrics Server
+- ✅ Kubernetes resource metrics
+- ✅ Fluent Bit
+- ✅ IAM / IRSA integration
+- ✅ CloudWatch log group
+- ✅ CloudWatch log streams
+- ✅ Kubernetes application logs
+  
 ## Key Learnings
 	- Amazon EKS cluster and managed node group management
 	- Kubernetes application deployment
