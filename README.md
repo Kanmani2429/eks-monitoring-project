@@ -2,13 +2,16 @@
 
 ## Overview
 A hands-on AWS DevOps project demonstrating how to deploy, monitor, and troubleshoot a Kubernetes application running on Amazon EKS.
+
 The project integrates:
-	- Prometheus & Grafana for Kubernetes monitoring
-	- Metrics Server for resource metrics
-	- Fluent Bit for container log collection
-	- Amazon CloudWatch for centralized logging
-	- IAM / IRSA for secure AWS access
-	- Helm & eksctl for Kubernetes and EKS management
+
+- Prometheus & Grafana for Kubernetes monitoring
+- Metrics Server for resource metrics
+- Fluent Bit for container log collection
+- Amazon CloudWatch for centralized logging
+- IAM / IRSA for secure AWS access
+- Helm & eksctl for Kubernetes and EKS management
+
 The project focuses on monitoring, centralized logging, AWS IAM integration, and production-style troubleshooting.
 
 ## Architecture
