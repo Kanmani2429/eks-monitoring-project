@@ -180,6 +180,7 @@ eksctl create iamserviceaccount \
 
 This implemented the following authentication flow:
 
+```text
 Kubernetes Workload
         │
         ▼
@@ -193,6 +194,7 @@ Kubernetes ServiceAccount
         │
         ▼
 Amazon CloudWatch
+```
 
 This avoids storing long-term AWS access keys inside Kubernetes workloads.
 
@@ -249,6 +251,7 @@ aws logs describe-log-streams \
 
 CloudWatch log streams were successfully created for Kubernetes containers, confirming the complete logging pipeline:
 
+```text
 NGINX / Kubernetes Containers
              │
              ▼
@@ -262,6 +265,7 @@ NGINX / Kubernetes Containers
              │
              ▼
        Log Streams
+```
 
 ## Validation
 The following components were successfully deployed and validated:
