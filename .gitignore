@@ -1,0 +1,40 @@
+# AWS credentials and configuration
+.aws/
+*.pem
+*.key
+
+# Kubernetes
+.kube/
+kubeconfig
+*.kubeconfig
+
+# Kubernetes secrets
+secrets.yaml
+secret.yaml
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
