@@ -186,10 +186,10 @@ Kubernetes Workload
 Kubernetes ServiceAccount
         │
         ▼
-IAM Role
+     IAM Role
         │
         ▼
-IAM Policy
+    IAM Policy
         │
         ▼
 Amazon CloudWatch
@@ -255,13 +255,13 @@ NGINX / Kubernetes Containers
         Fluent Bit
              │
              ▼
-        IAM / IRSA
+       IAM / IRSA
              │
              ▼
     CloudWatch Log Group
              │
              ▼
-        Log Streams
+       Log Streams
 
 ## Validation
 The following components were successfully deployed and validated:
